@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#086bb2">
+<meta name="description" content="MY WEALTH TRACKER — Delivery Trading, Long-Term Investment, Portfolio and Performance">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>MY WEALTH TRACKER V3.3.1</title>
+<style>
+:root{
+  --bg:#f4f5f2;
+  --panel:#ffffff;
+  --panel2:#f1f4f1;
+  --line:#d9e1dc;
+  --text:#202b29;
+  --muted:#687772;
+  --green:#137a50;
+  --red:#c13f45;
+  --blue:#287b78;
+  --gold:#956b1d;
+  --navy:#263b38;
+  --navy2:#287b78;
+  --softblue:#e8f1ee;
+}
+*{box-sizing:border-box}
+html,body{font-family:Roboto,Arial,Helvetica,sans-serif!important;font-style:normal!important}
+body{margin:0;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+header{padding:18px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:#fff;position:sticky;top:0;z-index:3;box-shadow:0 2px 8px rgba(20,42,65,.04)}
+.brand{font-weight:800;letter-spacing:.07em;font-size:18px;color:var(--navy)}
+.brand span{color:var(--blue)}
+.sub{color:var(--muted);font-size:12px}
+.wrap{max-width:1100px;margin:auto;padding:16px}
+nav{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:18px}
+button,.btn{font-weight:650;border:1px solid #cfd9e5;background:#fff;color:#334743;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:650;font-family:inherit;font-size:13px;transition:background .15s,border-color .15s,box-shadow .15s}
+button:hover,.btn:hover{border-color:#78a29a;background:#eef5f2}
+button.primary{background:#287b78;border-color:#287b78;color:#fff}
+button.danger{color:var(--red)}
+button.active{background:#263b38;border-color:#263b38;color:#fff;box-shadow:0 2px 5px rgba(23,50,79,.16)}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0;box-shadow:0 2px 7px rgba(26,48,72,.025)}
+.metric small,.muted{color:var(--muted)}
+.metric strong{display:block;font-size:25px;margin-top:7px;overflow-wrap:anywhere;font-weight:750;color:var(--navy)}
+.green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}.gold{color:var(--gold)}
+.section{margin:22px 0 10px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+h2{font-size:17px;margin:0;color:var(--navy);font-weight:750}
+h3{font-size:14px;margin:0 0 12px;color:var(--navy);font-weight:700}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.field{display:flex;flex-direction:column;gap:5px;flex:1;min-width:135px}
+label{font-size:12px;color:var(--muted);font-weight:600}
+input,select{width:100%;padding:12px;border-radius:9px;border:1px solid #cfd9e5;background:#fff;color:var(--text);outline:none;font:inherit}
+input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(40,123,120,.12)}
+.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+table{width:100%;border-collapse:collapse;min-width:760px}
+th,td{padding:10px 9px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{color:#52657a;font-size:11px;text-transform:uppercase;letter-spacing:.045em;background:#f1f4f1}
+.tablewrap{overflow:auto}
+.pill{display:inline-block;border-radius:99px;padding:4px 9px;background:var(--softblue);color:var(--navy2);font-size:11px;font-weight:650}
+.notice{padding:12px 14px;border:1px solid #cbd9e8;background:#edf5f1;color:#315b50;border-radius:11px;margin:12px 0}
+.hidden{display:none!important}
+.actions{display:flex;gap:7px;flex-wrap:wrap}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.kpi{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);gap:10px}
+footer{color:var(--muted);font-size:11px;text-align:center;padding:25px}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.formgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){
+ header{padding:13px;position:relative}
+ .wrap{padding:13px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .card{padding:12px}
+ .metric strong{font-size:20px}
+ .formgrid,.two{grid-template-columns:1fr}
+ .field{min-width:100%}
+ nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ nav button{width:100%;min-height:44px}
+}
+
+/* v2.2 typography refinement: remove decorative script fonts everywhere */
+html, body, body * {
+  font-family: Roboto, "Noto Sans", Arial, Helvetica, sans-serif !important;
+  font-style: normal !important;
+  letter-spacing: normal;
+}
+button, input, select, textarea, table, th, td, label, small, strong, h1, h2, h3, p, span, div {
+  font-family: Roboto, "Noto Sans", Arial, Helvetica, sans-serif !important;
+  font-style: normal !important;
+}
+.brand { letter-spacing: .055em !important; font-weight: 800 !important; }
+
+
+/* Sign-aware calculation boxes: green positive, red negative */
+.pnl-box{display:inline-flex;align-items:center;justify-content:center;min-width:94px;padding:7px 11px;border-radius:9px;font-weight:750;border:1px solid transparent;font-variant-numeric:tabular-nums}
+.pnl-positive{color:#12633f!important;background:#e4f4eb!important;border-color:#9fd3b5!important}
+.pnl-negative{color:#a92e38!important;background:#fdebed!important;border-color:#efb2b8!important}
+.pnl-neutral{color:#59665f!important;background:#eef1ee!important;border-color:#d8dfda!important}
+.metric.pnl-positive{background:#f0faf4!important;border-color:#9fd3b5!important}
+.metric.pnl-negative{background:#fff3f3!important;border-color:#efb2b8!important}
+.metric.pnl-neutral{background:#fff!important;border-color:var(--line)!important}
+
+
+/* v2.4 warm cream / selected pale-yellow palette */
+:root{
+  --bg:#f7f2e5;
+  --panel:#fffdf7;
+  --panel2:#f4ecd7;
+  --line:#dfd1ae;
+  --text:#30291d;
+  --muted:#796e59;
+  --green:#137a50;
+  --red:#c13f45;
+  --blue:#9b741c;
+  --gold:#956b1d;
+  --navy:#5a4314;
+  --navy2:#b18416;
+  --softblue:#f3e8c9;
+}
+body{background:#f7f2e5!important;color:#30291d!important}
+header{background:#fffaf0!important;border-bottom-color:#dfd1ae!important;box-shadow:0 2px 9px rgba(91,67,20,.07)!important}
+.brand,h2,h3,.metric strong{color:#5a4314!important}
+.brand span{color:#a77c12!important}
+.card{background:#fffdf7!important;border-color:#dfd1ae!important;box-shadow:0 2px 8px rgba(91,67,20,.045)!important}
+nav button,.actions button,.btn{
+  background:#fffaf0!important;
+  color:#5a4314!important;
+  border:1px solid #d9c58e!important;
+}
+nav button:hover,.actions button:hover,.btn:hover{
+  background:#f6edda!important;border-color:#b99543!important;
+}
+nav button.active{
+  background:#e8d39a!important;
+  color:#4e3a0d!important;
+  border:1px solid #c4a34f!important;
+  box-shadow:0 2px 7px rgba(130,96,22,.16)!important;
+}
+button.primary{
+  background:#9b741c!important;border-color:#9b741c!important;color:#fff!important;
+}
+button.primary:hover{background:#805d13!important;border-color:#805d13!important}
+button.danger{color:#b7353e!important}
+input,select{
+  background:#fffefa!important;color:#30291d!important;border-color:#d9cba9!important;
+}
+input:focus,select:focus{
+  border-color:#b18416!important;box-shadow:0 0 0 3px rgba(177,132,22,.14)!important;
+}
+th{background:#f3e8c9!important;color:#69511b!important}
+td{border-bottom-color:#e8dfca!important}
+.pill{background:#f3e8c9!important;color:#725516!important}
+.notice{
+  background:#f7efd9!important;border-color:#e3d2a7!important;color:#65501d!important;
+}
+.metric.pnl-neutral{background:#fffdf7!important;border-color:#dfd1ae!important}
+/* Keep sign semantics stronger than the warm app palette */
+.pnl-positive{color:#12633f!important;background:#e4f4eb!important;border-color:#9fd3b5!important}
+.pnl-negative{color:#a92e38!important;background:#fdebed!important;border-color:#efb2b8!important}
+.pnl-neutral{color:#59665f!important;background:#eef1ee!important;border-color:#d8dfda!important}
+.metric.pnl-positive{background:#f0faf4!important;border-color:#9fd3b5!important}
+.metric.pnl-negative{background:#fff3f3!important;border-color:#efb2b8!important}
+
+
+/* v2.5 Premium Forest / Deep Yellow-Gold refinement */
+:root{
+  --bg:#F7F5ED;
+  --panel:#FFFEFA;
+  --panel2:#F2EEE2;
+  --line:#D8CFB8;
+  --text:#26332D;
+  --muted:#68756D;
+  --green:#075B35;
+  --red:#B51224;
+  --blue:#214B3A;
+  --gold:#A87900;
+  --navy:#123B2C;
+  --navy2:#1B513B;
+  --softblue:#E8EFE9;
+}
+body{background:#F7F5ED!important;color:#26332D!important}
+header{
+  background:#2E624D!important;
+  border-bottom:1px solid #244F3D!important;
+  box-shadow:0 3px 12px rgba(14,48,36,.16)!important;
+}
+.brand{color:#FFFDF5!important;letter-spacing:.065em!important}
+.brand span{color:#F0C64A!important}
+.sub{color:#E2E9E1!important}
+.card{background:#FFFEFA!important;border-color:#D8CFB8!important}
+h2,h3,.metric strong{color:#2E624D!important}
+nav button,.actions button,.btn{
+  background:#FFFEFA!important;
+  color:#214B3A!important;
+  border:1px solid #D8CFB8!important;
+}
+nav button:hover,.actions button:hover,.btn:hover{
+  background:#F1E8CF!important;border-color:#B58B26!important;
+}
+nav button.active{
+  background:#2E624D!important;
+  color:#FFFDF5!important;
+  border:1px solid #173D30!important;
+  box-shadow:0 3px 9px rgba(23,61,48,.22)!important;
+}
+button.primary{
+  background:#A87900!important;
+  border-color:#A87900!important;
+  color:#FFFFFF!important;
+}
+button.primary:hover{background:#875F00!important;border-color:#875F00!important}
+input,select{
+  background:#FFFEFA!important;color:#26332D!important;border-color:#D8CFB8!important;
+}
+input:focus,select:focus{
+  border-color:#A87900!important;box-shadow:0 0 0 3px rgba(168,121,0,.15)!important;
+}
+th{background:#F1E8CF!important;color:#624900!important}
+.pill{background:#E8EFE9!important;color:#214B3A!important}
+.notice{
+  background:#F3EBD5!important;border-color:#DCC78D!important;color:#5B4717!important;
+}
+/* Deeper yellow-gold accent for portfolio and highlighted navigation */
+.gold-accent,.portfolio-accent{
+  background:#F0D77A!important;color:#5A460D!important;border-color:#D3B75A!important;
+}
+/* Stronger sign-based P&L boxes */
+.pnl-positive{
+  color:#064D2D!important;background:#D5F0DF!important;border-color:#68B889!important;
+}
+.pnl-negative{
+  color:#A30D20!important;background:#FBE0E3!important;border-color:#E58A95!important;
+}
+.pnl-neutral{
+  color:#59665F!important;background:#EEF1EE!important;border-color:#D8DFDA!important;
+}
+.metric.pnl-positive{background:#E7F6EC!important;border-color:#68B889!important}
+.metric.pnl-negative{background:#FDEBED!important;border-color:#E58A95!important}
+.metric.pnl-neutral{background:#FFFEFA!important;border-color:#D8CFB8!important}
+
+
+/* v2.7 COVE palette — deep blue, sky blue, warm yellow and cream */
+:root{
+  --bg:#FFF9EF; --panel:#FFFFFF; --panel2:#EAF5FC; --line:#C7E3F4;
+  --text:#102B4C; --muted:#63788C; --green:#075B35; --red:#B51224;
+  --blue:#006BBB; --gold:#B77B12; --navy:#004F8F; --navy2:#006BBB;
+  --softblue:#E7F4FC;
+}
+body{background:#FFF9EF!important;color:#102B4C!important}
+header{background:#006BBB!important;border-bottom:1px solid #30A0E0!important;box-shadow:0 3px 14px rgba(0,79,143,.16)!important}
+.brand{color:#FFFFFF!important;letter-spacing:.065em!important}
+.brand span{color:#FFE3B3!important}
+.sub{color:#EAF6FF!important}
+.card{background:#FFFFFF!important;border-color:#D5E9F5!important;box-shadow:0 2px 9px rgba(0,107,187,.055)!important}
+h2,h3,.metric strong{color:#102B4C!important}
+nav button,.actions button,.btn{background:#EAF5FC!important;color:#064C80!important;border:1px solid #B9DFF4!important}
+nav button:hover,.actions button:hover,.btn:hover{background:#D9EFFB!important;border-color:#30A0E0!important}
+nav button.active{background:#006BBB!important;color:#FFFFFF!important;border:1px solid #006BBB!important;box-shadow:0 3px 9px rgba(0,79,143,.2)!important}
+button.primary{background:#006BBB!important;border-color:#006BBB!important;color:#FFFFFF!important}
+button.primary:hover{background:#005796!important;border-color:#005796!important}
+input,select{background:#FFFFFF!important;color:#102B4C!important;border-color:#C7DCE9!important}
+input:focus,select:focus{border-color:#30A0E0!important;box-shadow:0 0 0 3px rgba(48,160,224,.15)!important}
+th{background:#EAF5FC!important;color:#064C80!important}
+.pill{background:#E7F4FC!important;color:#064C80!important}
+.notice{background:#FFF2D8!important;border-color:#FFD994!important;color:#6A4A12!important}
+.gold-accent,.portfolio-accent{background:#FFC872!important;color:#553600!important;border-color:#E8AD45!important}
+button.danger{color:#B51224!important}
+/* Profit/loss colours remain independent from the Cove brand palette */
+.pnl-positive{color:#064D2D!important;background:#D5F0DF!important;border-color:#68B889!important}
+.pnl-negative{color:#A30D20!important;background:#FBE0E3!important;border-color:#E58A95!important}
+.pnl-neutral{color:#59665F!important;background:#EEF1EE!important;border-color:#D8DFDA!important}
+.metric.pnl-positive{background:#E7F6EC!important;border-color:#68B889!important}
+.metric.pnl-negative{background:#FDEBED!important;border-color:#E58A95!important}
+.metric.pnl-neutral{background:#FFFFFF!important;border-color:#D5E9F5!important}
+
+
+/* v2.8 Master Cove Layout — reference-inspired full application */
+:root{--cove-deep:#006BBB;--cove-sky:#30A0E0;--cove-yellow:#FFC872;--cove-cream:#FFE3B3}
+body{background:#FFF9F2!important;color:#102B4C!important}
+.app-header{display:block!important;padding:0!important;background:var(--cove-deep)!important;border:0!important;border-bottom:4px solid var(--cove-sky)!important;box-shadow:0 4px 14px rgba(0,70,130,.14)!important;position:relative!important}
+.header-main{display:flex;align-items:center;gap:16px;padding:17px 24px 15px;max-width:1440px;margin:auto}
+.brand-mark{width:74px;height:74px;flex:0 0 74px}
+.brand-mark svg{width:100%;height:100%}
+.header-copy{min-width:0;flex:1}
+.header-copy .brand{font-size:clamp(21px,3.2vw,34px)!important;line-height:1.1;color:#fff!important;letter-spacing:.035em!important;font-weight:850!important}
+.header-copy .sub{font-size:clamp(12px,1.8vw,17px)!important;color:#EAF6FF!important;margin-top:6px}
+.header-tools{display:flex;gap:18px;align-items:center;color:#fff}
+.header-tool{font-size:29px;font-weight:700;line-height:1}
+.header-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:1440px;margin:auto;padding:12px 24px;background:#fff}
+.header-actions .actions button{background:#EAF5FC!important;border:1px solid #B9DFF4!important;color:#064C80!important;border-radius:12px!important;font-weight:750}
+.version-badge{background:#FFECC8;color:#745016;border-radius:12px;padding:10px 16px;font-weight:750;white-space:nowrap}
+.wrap{max-width:1440px!important;padding:16px 20px!important}
+.accounting-toolbar{background:#fff!important;border-color:#D5E9F5!important}
+nav{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px!important;margin:16px 0 22px!important}
+nav button{min-height:68px;border-radius:14px!important;background:#EAF5FC!important;border:2px solid #C7E3F4!important;color:#073B68!important;font-size:15px!important;font-weight:750!important;box-shadow:0 2px 5px rgba(0,107,187,.06)}
+nav button.active{background:#006BBB!important;color:#fff!important;border-color:#006BBB!important}
+nav button[data-tab="portfolio"]{background:#FFE3B3!important;border-color:#FFD17A!important;color:#694500!important}
+nav button[data-tab="portfolio"].active{background:#FFC872!important;color:#513400!important;border-color:#E8AD45!important}
+.dashboard-kpis{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:14px!important;margin-top:10px}
+.metric{min-height:130px;padding:17px!important;border-radius:17px!important}
+.metric small{font-size:13px;font-weight:700;color:#244B70!important}
+.metric strong{font-size:clamp(20px,2.2vw,29px)!important;color:#102B4C!important}
+.metric-icon{font-size:26px;color:#006BBB;font-weight:900;margin-bottom:7px}
+.metric.pnl-positive strong,.metric.pnl-negative strong,.metric.pnl-neutral strong{color:inherit!important}
+.metric.pnl-positive small{color:#064D2D!important}.metric.pnl-negative small{color:#A30D20!important}
+.section{margin-top:23px!important}
+h2{font-size:20px!important;color:#082E54!important}
+#dashboard .section:first-of-type{margin-top:22px}
+#dashboard #journal, #dashboard .card{border-radius:16px}
+#dashboard .section h2{font-weight:800}
+#dashboard .page .notice{background:#FFF2D8!important;border-color:#FFD994!important;color:#6A4A12!important}
+#dashboard .section:has(+ .card table) {margin-bottom:10px}
+.market-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.market-card{display:grid;grid-template-columns:34px 1fr;align-items:center;column-gap:10px;row-gap:8px;background:#F4FAFE!important;border:1px solid #D4E8F4!important}
+.market-icon{font-size:27px;color:#006BBB;grid-row:span 2}
+.market-card b{font-size:15px;color:#102B4C}
+.market-card select,.market-card input{grid-column:2;padding:9px 10px}
+.status-pill{display:inline-block;grid-column:2;padding:6px 10px;border-radius:9px;font-weight:750;font-size:12px}
+.status-pill.positive{background:#D5F0DF;color:#064D2D}
+.status-pill.negative{background:#FBE0E3;color:#A30D20}
+.status-pill.neutral{background:#EAF0F4;color:#526575}
+#journal .section:first-child{margin-top:10px}
+#journal .card{border-radius:16px}
+.page .card{box-shadow:0 3px 12px rgba(0,75,130,.045)}
+button.primary{background:#006BBB!important;border-color:#006BBB!important}
+button.primary:hover{background:#005796!important}
+.pnl-positive{background:#D5F0DF!important;color:#064D2D!important;border-color:#68B889!important}
+.pnl-negative{background:#FBE0E3!important;color:#A30D20!important;border-color:#E58A95!important}
+.pnl-neutral{background:#EEF1EE!important;color:#59665F!important;border-color:#D8DFDA!important}
+@media(max-width:900px){
+ .dashboard-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .market-cards{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+ .header-main{padding:13px 14px;gap:10px}
+ .brand-mark{width:48px;height:48px;flex-basis:48px}
+ .header-tools{gap:10px}.header-tool{font-size:22px}
+ .header-actions{padding:10px 13px;align-items:flex-start;flex-wrap:wrap}
+ .header-actions .actions{flex:1}.header-actions .actions button{flex:1;padding:10px 8px;font-size:12px}
+ .version-badge{font-size:11px;padding:8px 10px}
+ .wrap{padding:12px!important}
+ nav{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+ nav button{min-height:54px;font-size:13px!important;padding:9px 6px}
+ .dashboard-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+ .metric{min-height:112px;padding:12px!important}
+ .metric strong{font-size:18px!important}
+ .market-cards{grid-template-columns:1fr}
+ .market-card{grid-template-columns:32px 1fr}
+ .formgrid{grid-template-columns:1fr!important}
+ .two{grid-template-columns:1fr!important}
+}
+
+
+/* v2.9 Reference alignment: clean typography and dashboard-first hierarchy */
+html,body,body *,button,input,select,textarea,table,th,td,label,small,strong,h1,h2,h3,p,span,div{
+  font-family:Roboto,"Noto Sans",Arial,Helvetica,sans-serif!important;
+  font-style:normal!important;
+  letter-spacing:normal;
+}
+.app-header .brand{font-family:Roboto,"Noto Sans",Arial,sans-serif!important;font-weight:850!important;letter-spacing:.035em!important}
+.header-copy .sub{font-weight:500;letter-spacing:.01em}
+.header-actions{border-bottom:1px solid #E2EDF4}
+nav button{display:flex;align-items:center;justify-content:center;gap:10px;font-size:15px!important;font-weight:750!important}
+.nav-icon{font-size:23px;line-height:1;color:inherit;font-weight:800}
+nav button[data-tab="portfolio"]{background:#FFE3B3!important;border-color:#FFD17A!important;color:#694500!important}
+nav button[data-tab="portfolio"].active{background:#FFC872!important;border-color:#E8AD45!important;color:#513400!important}
+.dashboard-kpis{margin-top:12px!important}
+.bottom-utilities{max-width:1440px;margin:24px auto 0;padding:0 20px 18px}
+.accounting-details{background:#fff;border:1px solid #D5E9F5;border-radius:13px;padding:12px 14px}
+.accounting-details summary{font-weight:750;color:#064C80;cursor:pointer}
+.accounting-details .accounting-toolbar{margin-top:12px!important;border:0!important;box-shadow:none!important;padding:6px!important}
+.local-data-note{margin-top:10px}
+.local-data-note .notice{margin:0;font-size:12px;padding:10px 12px}
+@media(max-width:560px){
+ .header-copy .brand{font-size:20px!important}
+ .header-copy .sub{font-size:11px!important}
+ nav button{font-size:12px!important;gap:6px}
+ .nav-icon{font-size:19px}
+ .bottom-utilities{padding:0 12px 16px}
+}
+
+
+/* v3.0 accounting integrity status */
+.ledger-integrity{margin:10px 0 14px;padding:10px 13px;border-radius:10px;font-size:12px;font-weight:700}
+.ledger-integrity.is-valid{background:#E8F5EC;color:#145A32;border:1px solid #A9D6B7}
+.ledger-integrity.has-errors{background:#FCE9EB;color:#9D1C2A;border:1px solid #E5A5AC}
+
+
+/* v3.2.1 Android-friendly visible backup picker */
+.backup-picker{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border:1px solid #B9DFF4;border-radius:10px;background:#EAF5FC;color:#064C80;font-weight:750;font-size:13px;cursor:pointer;min-height:42px}
+.backup-file-visible{display:block!important;max-width:100%;width:100%;margin-top:7px;padding:8px;background:#fff;border:1px solid #B9DFF4;border-radius:9px;font-size:12px}
+.backup-restore-panel{display:none;margin:10px 0 0;padding:13px;border:2px solid #30A0E0;border-radius:12px;background:#EAF5FC;color:#102B4C}
+.backup-restore-panel.show{display:block}
+.backup-restore-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}
+.backup-restore-actions button{min-height:44px}
+#backupStatus{font-size:12px;margin-top:8px;white-space:normal}
+
+</style>
+</head>
+<body>
+<header class="app-header">
+  <div class="header-main">
+    <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 72 72"><path d="M8 57h13V43H8zM28 57h13V31H28zM48 57h13V17H48z" fill="#BFE8FF"/><path d="M8 34 27 22l12 7L61 8" fill="none" stroke="#FFC872" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M49 8h12v12" fill="none" stroke="#FFC872" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="header-copy"><div class="brand">MY WEALTH TRACKER</div><div class="sub">Trading&nbsp; • &nbsp;Investing&nbsp; • &nbsp;Portfolio&nbsp; • &nbsp;Performance</div></div>
+    <div class="header-tools"><span class="header-tool" title="Notifications">♧</span><span class="header-tool" title="Settings">⚙</span></div>
+  </div>
+  <div class="header-actions">
+    <div class="actions"><button id="exportBtn">⇧ &nbsp;Export Backup</button><label for="backupFile" class="backup-picker">⇩ &nbsp;Choose Backup JSON</label><input id="backupFile" type="file" accept=".json,application/json" class="backup-file-visible"></div>
+    <span class="version-badge">Version 3.3.1</span>
+  </div>
+  <div class="wrap" style="padding-top:0;padding-bottom:12px">
+    <div id="backupRestorePanel" class="backup-restore-panel" aria-live="polite">
+      <b>Backup file selected</b>
+      <div id="backupSelectedName" style="margin-top:5px;overflow-wrap:anywhere"></div>
+      <div>अब नीचे Restore Backup दबाने पर ही डेटा बदलेगा।</div>
+      <div class="backup-restore-actions"><button type="button" class="primary" id="restoreBackupNow">Restore Backup</button><button type="button" id="cancelBackupRestore">Cancel</button></div>
+      <div id="backupStatus"></div>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+
+</div>
+<nav>
+<button class="tab active" data-tab="dashboard"><span class="nav-icon">⌂</span> Dashboard</button><button class="tab" data-tab="transactions"><span class="nav-icon">⇄</span> Transactions</button><button class="tab" data-tab="journal"><span class="nav-icon">▥</span> Trading Journal</button><button class="tab" data-tab="portfolio"><span class="nav-icon">▱</span> Portfolio</button><button class="tab" data-tab="analysis"><span class="nav-icon">↗</span> Performance</button><button class="tab" data-tab="zerodha"><span class="nav-icon">↔</span> Zerodha Import</button><button class="tab" data-tab="legacy"><span class="nav-icon">▤</span> Old Tradebook</button>
+</nav>
+<div id="dashboard" class="page">
+<div class="grid dashboard-kpis">
+  <div class="card metric"><div class="metric-icon">▤</div><small>Total Buy Value</small><strong id="mBuy">₹0</strong></div>
+  <div class="card metric"><div class="metric-icon">▣</div><small>Current Holding Value*</small><strong id="mValue">₹0</strong></div>
+  <div class="card metric"><div class="metric-icon">↗</div><small>Realized P&amp;L**</small><strong id="mReal">₹0</strong></div>
+  <div class="card metric"><div class="metric-icon">↘</div><small>Unrealized P&amp;L*</small><strong id="mUnreal">₹0</strong></div>
+</div>
+<div id="ledgerIntegrity" class="ledger-integrity is-valid">Accounting check: validating transactions…</div>
+<div class="notice">*Current holding value and unrealized P&amp;L use manually updated last prices. Positive results are green, negative results red and zero results neutral. No live market feed or broker API is connected.</div>
+<div class="section"><h2>Powerful 9-Step Trading Calculator</h2></div>
+<div class="card">
+<div class="formgrid">
+<div class="field"><label>Stock Symbol</label><input id="jSymbol" placeholder="e.g. MOTILALOFS"></div>
+<div class="field"><label>Resistance (₹)</label><input id="jResistance" type="number" step=".01"></div>
+<div class="field"><label>Support (₹)</label><input id="jSupport" type="number" step=".01"></div>
+<div class="field"><label>Breakout Candle Close (₹)</label><input id="jClose" type="number" step=".01"></div>
+<div class="field"><label>Actual Buy Price (₹)</label><input id="jEntry" type="number" step=".01"></div>
+<div class="field"><label>Previous Candle Low (₹)</label><input id="jLow" type="number" step=".01"></div>
+<div class="field"><label>Quantity</label><input id="jQty" type="number" min="1" step="1"></div>
+<div class="field"><label>Category</label><select id="jCategory"><option>Short Term</option><option>Medium Term</option></select></div>
+<div class="field"><label>Current / Last Price (₹)</label><input id="jCurrent" type="number" step=".01"></div>
+</div>
+<div class="actions" style="margin-top:13px"><button class="primary" id="calcJournal">Calculate &amp; Save Setup</button></div>
+</div>
+<div class="two" style="margin-top:12px">
+<div class="card"><h3>Calculated Setup</h3><div id="jResults" class="muted">Enter setup values and calculate.</div></div>
+<div class="card"><h3>Mandatory Strategy Checks</h3>
+<div class="field"><label>12 EMA and 26 EMA uptrend?</label><select id="jEma"><option value="Not checked">Not checked</option><option>Yes</option><option>No</option></select></div>
+<div class="field" style="margin-top:9px"><label>Breakout volume greater than previous candle?</label><select id="jVolume"><option value="Not checked">Not checked</option><option>Yes</option><option>No</option></select></div>
+<div class="field" style="margin-top:9px"><label>Nifty momentum status</label><select id="jNifty"><option>Not checked</option><option>Uptrend</option><option>Weak</option><option>Pullback</option><option>Downtrend</option></select></div>
+<div class="field" style="margin-top:9px"><label>Nifty P/E valuation</label><select id="jPE"><option>Not checked</option><option>Cheap (10–15)</option><option>Moderate (15–20)</option><option>Expensive (20–25)</option><option>Outside defined bands</option></select></div>
+</div></div>
+
+<div class="section"><h2>Market Snapshot</h2><span class="muted">Manual status — update from your market charts</span></div>
+<div class="market-cards">
+  <div class="card market-card"><div class="market-icon">↗</div><b>Nifty Momentum</b><select id="dashNifty"><option value="Not updated">Not updated</option><option>Uptrend</option><option>Weak</option><option>Pullback</option><option>Downtrend</option></select></div>
+  <div class="card market-card"><div class="market-icon">▱</div><b>Nifty P/E</b><input id="dashPE" type="number" step="0.01" placeholder="Enter Nifty P/E"><span id="dashPEBand" class="status-pill neutral">Not updated</span></div>
+  <div class="card market-card"><div class="market-icon">▥</div><b>Market View</b><select id="dashMarket"><option>Not updated</option><option>Bullish</option><option>Neutral</option><option>Bearish</option></select></div>
+</div>
+<div class="section"><h2>Portfolio Snapshot</h2><button class="primary" onclick="showTab('transactions')">＋ Add Transaction</button></div>
+<div class="card tablewrap"><table><thead><tr><th>Symbol</th><th>Portfolio</th><th>Horizon</th><th>Qty Held</th><th>Avg Cost</th><th>Last Price</th><th>Market Value</th><th>Unrealized P&amp;L</th></tr></thead><tbody id="dashRows"></tbody></table></div>
+<div class="section"><h2>Recent Activity</h2></div><div class="card tablewrap"><table><thead><tr><th>Date</th><th>Symbol</th><th>Type</th><th>Qty</th><th>Price</th><th>Value</th></tr></thead><tbody id="recentRows"></tbody></table></div>
+</div>
+<div id="transactions" class="page hidden">
+<div class="section"><h2>Add Buy / Sell Transaction</h2></div>
+<div class="card">
+<div class="formgrid">
+<div class="field"><label>Date</label><input id="txDate" type="date"></div>
+<div class="field"><label>Stock Symbol</label><input id="txSymbol" placeholder="e.g. MOTILALOFS"></div>
+<div class="field"><label>Transaction Type</label><select id="txType"><option>BUY</option><option>SELL</option></select></div>
+<div class="field"><label>Product Type</label><select id="txProduct" disabled><option value="CNC">CNC — Delivery Only</option></select><small class="muted">Intraday / MIS is not available in this system.</small></div>
+<div class="field"><label>Portfolio</label><select id="txBook"><option value="TRADING">Delivery Trading</option><option value="INVESTMENT">Long-Term Investment</option></select></div>
+<div class="field"><label>Holding Horizon</label><select id="txCategory"><option>Short Term</option><option>Medium Term</option><option>Long Term</option></select></div>
+<div class="field"><label>Quantity</label><input id="txQty" type="number" min="1" step="1"></div>
+<div class="field"><label>Price (₹)</label><input id="txPrice" type="number" min="0" step="0.01"></div>
+<div class="field"><label>Charges (₹)</label><input id="txCharges" type="number" min="0" step="0.01" value="0"></div>
+<div class="field"><label>Broker / Notes</label><input id="txNotes" placeholder="Zerodha / partial exit / re-entry"></div>
+</div><div class="actions" style="margin-top:13px"><button class="primary" id="addTx">Save Transaction</button><button id="clearTx">Clear</button></div>
+<div class="muted" style="margin-top:10px;font-size:12px">FIFO and Weighted Average are both available in the Accounting View selector. Buy charges are included in cost; sell charges reduce net proceeds. Sells exceeding available shares are rejected. Product Type is CNC Delivery only; Delivery Trading and Long-Term Investment are accounted separately.</div>
+</div>
+<div class="section"><h2>All Transactions</h2><button id="csvExport">Download Transactions CSV</button></div>
+<div class="card tablewrap"><table><thead><tr><th>Date</th><th>Symbol</th><th>Type</th><th>Portfolio</th><th>Horizon</th><th>Product</th><th>Qty</th><th>Price</th><th>Charges</th><th>Value</th><th>Notes</th><th></th></tr></thead><tbody id="txRows"></tbody></table></div>
+</div>
+<div id="journal" class="page hidden">
+<div class="section"><h2>Trading Journal — Saved Setups</h2><span class="muted">Your calculated Powerful 9-Step setups</span></div><div class="card tablewrap"><table><thead><tr><th>Symbol</th><th>Resistance</th><th>Support</th><th>Gadda</th><th>Breakout Close</th><th>Strategy Entry</th><th>Actual Entry</th><th>SL</th><th>Target</th><th>R:R</th><th>Action</th></tr></thead><tbody id="journalRows"></tbody></table></div>
+</div>
+<div id="portfolio" class="page hidden">
+<div class="section"><h2>Open Holdings — Delivery Trading & Long-Term Investment</h2></div><div class="card tablewrap"><table><thead><tr><th>Symbol</th><th>Portfolio</th><th>Horizon</th><th>Qty</th><th>Avg Cost</th><th>Last Price</th><th>Cost Value</th><th>Market Value</th><th>Unrealized P&amp;L</th><th>Update Price</th></tr></thead><tbody id="portfolioRows"></tbody></table></div>
+</div>
+<div id="legacy" class="page hidden">
+<div class="section"><h2>Old Zerodha Tradebook — Unclassified Archive</h2><span class="muted">Historical record only; excluded from holdings and P&amp;L</span></div>
+<div class="notice">These 28 historical executions are preserved exactly as tradebook records. The CSV does not identify MIS/CNC Product Type, so they are not classified and do not affect your new Delivery Trading or Long-Term Investment accounting.</div>
+<div class="grid" style="grid-template-columns:repeat(3,minmax(0,1fr))"><div class="card metric"><small>Archived executions</small><strong id="legacyCount">0</strong></div><div class="card metric"><small>Classification</small><strong style="font-size:18px">Unclassified</strong></div><div class="card metric"><small>Impact on new P&amp;L</small><strong style="font-size:18px">₹0</strong></div></div>
+<div class="section"><h2>Historical Executions</h2><button id="legacyExport">Download Archive CSV</button></div>
+<div class="card tablewrap"><table><thead><tr><th>Date</th><th>Time</th><th>Symbol</th><th>Side</th><th>Qty</th><th>Price</th><th>Trade ID</th><th>Product Type</th></tr></thead><tbody id="legacyRows"></tbody></table></div>
+</div>
+<div id="analysis" class="page hidden">
+<div class="section"><h2>Performance Analysis</h2></div><div class="grid">
+<div class="card metric"><small>Closed Sell Quantity</small><strong id="aSold">0</strong></div><div class="card metric"><small>Open Quantity</small><strong id="aOpen">0</strong></div><div class="card metric"><small>Completed Sell Transactions</small><strong id="aSells">0</strong></div><div class="card metric"><small>Journal Setups</small><strong id="aSetups">0</strong></div></div>
+<div class="card metric" style="margin-top:12px"><small>Realized P&amp;L · <span id="aRealizedMethod">FIFO</span></small><strong id="aRealized">₹0.00</strong><div class="muted" style="font-size:12px;margin-top:5px">Calculated from completed SELL transactions after transaction charges. Changes with the FIFO / Weighted Average setting below.</div></div>
+<div class="two" style="margin-top:12px"><div class="card"><h3>Portfolio Type Breakdown</h3><div id="bookRows"></div></div><div class="card"><h3>Category Breakdown</h3><div id="catRows"></div></div><div class="card"><h3>Important Accounting Notes</h3><p class="muted">Realized P&amp;L is calculated using FIFO lots and transaction charges. Open-lot cost includes buy-side charges. Unrealized P&amp;L uses the last manually updated price. Corporate actions, dividends, taxes and broker statement reconciliation are not yet automated.</p></div></div>
+</div>
+<div id="zerodha" class="page hidden">
+<div class="section"><h2>Zerodha Tradebook CSV Import — New Delivery Records</h2></div>
+<div class="card">
+<p class="muted">Use this importer only for confirmed CNC/Delivery records. The standard tradebook CSV does not reliably identify MIS/CNC Product Type. Do not import mixed or unclassified historical records into the new ledger. The old 28 executions are already preserved in Old Tradebook.</p>
+<div class="field"><label>Select Zerodha Tradebook CSV</label><input id="csvFile" type="file" accept=".csv,text/csv"></div>
+<div id="csvPreview" class="muted" style="margin-top:12px"></div>
+<div class="actions" style="margin-top:12px"><button class="primary" id="importCsv" disabled>Import Previewed Rows</button></div>
+<div class="notice">Only import trades after confirming they are CNC/Delivery. Do not import MIS or unclassified historical rows here. Never enter your Kite password, PIN, OTP, API secret or access token into this standalone page.</div>
+</div>
+</div>
+
+<div class="bottom-utilities">
+  <details class="accounting-details">
+    <summary>Accounting Settings · FIFO / Weighted Average</summary>
+    <div class="card accounting-toolbar" style="margin-bottom:14px">
+<div class="row" style="align-items:center">
+<div class="field" style="max-width:320px"><label>Accounting View (choose calculation basis)</label><select id="accountingMethod"><option value="FIFO">FIFO Costing</option><option value="WAC">Weighted Average Cost</option></select></div>
+<div class="muted" style="font-size:12px;flex:2;min-width:220px">Both methods are supported. Switch the view to compare realized P&amp;L, remaining cost and average cost. Your transaction records are unchanged.</div>
+</div>
+  </details>
+  <div class="local-data-note"><div class="notice" style="border-color:#cbd9e8;background:#edf5f1;color:#315b50">Local accounting prototype: records are saved in this browser and can be exported as a backup. Secure cloud sync is not connected. No live prices or broker API are used. Old Tradebook archive is separate and excluded from accounting.</div></div>
+</div>
+<footer>MY WEALTH TRACKER v3.3.1 • Local prototype • Back up your data regularly • Not connected to live Zerodha data</footer>
+</div>
+<script>
+const KEY='mwt_v1_data';
+const INITIAL_LEGACY_TRADES="[{\"date\":\"2026-09-25\",\"symbol\":\"DELTACORP\",\"type\":\"BUY\",\"qty\":10.0,\"price\":76.760002,\"time\":\"2026-09-25T13:43:44\",\"tradeId\":\"206539384\",\"orderId\":\"1100000056895513\",\"isin\":\"INE124G01033\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-09-29\",\"symbol\":\"ACC\",\"type\":\"SELL\",\"qty\":4.0,\"price\":1198.599976,\"time\":\"2026-09-29T09:28:02\",\"tradeId\":\"647383\",\"orderId\":\"1000000005719554\",\"isin\":\"INE012A01025\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-09-29\",\"symbol\":\"ACC\",\"type\":\"BUY\",\"qty\":4.0,\"price\":1204.699951,\"time\":\"2026-09-29T15:15:08\",\"tradeId\":\"8665332\",\"orderId\":\"1000000073764660\",\"isin\":\"INE012A01025\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-09-30\",\"symbol\":\"RECLTD\",\"type\":\"SELL\",\"qty\":10.0,\"price\":296.75,\"time\":\"2026-09-30T09:16:26\",\"tradeId\":\"600215701\",\"orderId\":\"1300000001347661\",\"isin\":\"INE020B01018\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-09-30\",\"symbol\":\"DEEPAKNTR\",\"type\":\"SELL\",\"qty\":1.0,\"price\":1543.199951,\"time\":\"2026-09-30T09:19:20\",\"tradeId\":\"200497236\",\"orderId\":\"1100000003000851\",\"isin\":\"INE288B01029\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-09-30\",\"symbol\":\"GODREJCP\",\"type\":\"SELL\",\"qty\":1.0,\"price\":853.049988,\"time\":\"2026-09-30T09:31:16\",\"tradeId\":\"201455259\",\"orderId\":\"1100000008765561\",\"isin\":\"INE102D01028\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-09-30\",\"symbol\":\"RECLTD\",\"type\":\"BUY\",\"qty\":10.0,\"price\":300.899994,\"time\":\"2026-09-30T11:55:10\",\"tradeId\":\"605696804\",\"orderId\":\"1300000046813416\",\"isin\":\"INE020B01018\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-09-30\",\"symbol\":\"GODREJCP\",\"type\":\"BUY\",\"qty\":1.0,\"price\":855.700012,\"time\":\"2026-09-30T12:40:06\",\"tradeId\":\"206948715\",\"orderId\":\"1100000053996359\",\"isin\":\"INE102D01028\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-09-30\",\"symbol\":\"UBL\",\"type\":\"SELL\",\"qty\":3.0,\"price\":1169.5,\"time\":\"2026-09-30T12:42:39\",\"tradeId\":\"607113900\",\"orderId\":\"1300000058076419\",\"isin\":\"INE686F01025\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-09-30\",\"symbol\":\"DEEPAKNTR\",\"type\":\"BUY\",\"qty\":1.0,\"price\":1530.800049,\"time\":\"2026-09-30T15:06:14\",\"tradeId\":\"211674211\",\"orderId\":\"1100000087661298\",\"isin\":\"INE288B01029\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-09-30\",\"symbol\":\"UBL\",\"type\":\"BUY\",\"qty\":3.0,\"price\":1156.0,\"time\":\"2026-09-30T15:14:57\",\"tradeId\":\"612416024\",\"orderId\":\"1300000094772008\",\"isin\":\"INE686F01025\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-10-01\",\"symbol\":\"LUPIN\",\"type\":\"SELL\",\"qty\":1.0,\"price\":2018.400024,\"time\":\"2026-10-01T09:22:58\",\"tradeId\":\"400629692\",\"orderId\":\"1200000005064029\",\"isin\":\"INE326A01037\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-10-01\",\"symbol\":\"LUPIN\",\"type\":\"SELL\",\"qty\":1.0,\"price\":2018.699951,\"time\":\"2026-10-01T09:22:58\",\"tradeId\":\"400629691\",\"orderId\":\"1200000005064029\",\"isin\":\"INE326A01037\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-10-01\",\"symbol\":\"LUPIN\",\"type\":\"BUY\",\"qty\":2.0,\"price\":2022.400024,\"time\":\"2026-10-01T15:12:32\",\"tradeId\":\"411472504\",\"orderId\":\"1200000100073026\",\"isin\":\"INE326A01037\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-10-05\",\"symbol\":\"M&M\",\"type\":\"SELL\",\"qty\":1.0,\"price\":2857.5,\"time\":\"2026-10-05T09:00:02\",\"tradeId\":\"400002458\",\"orderId\":\"1200000000018962\",\"isin\":\"INE101A01026\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-10-05\",\"symbol\":\"M&M\",\"type\":\"BUY\",\"qty\":1.0,\"price\":2852.100098,\"time\":\"2026-10-05T15:09:30\",\"tradeId\":\"410742114\",\"orderId\":\"1200000094394585\",\"isin\":\"INE101A01026\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-10-12\",\"symbol\":\"PVRINOX\",\"type\":\"BUY\",\"qty\":1.0,\"price\":1358.400024,\"time\":\"2026-10-12T11:31:07\",\"tradeId\":\"404551862\",\"orderId\":\"1200000045059929\",\"isin\":\"INE191H01014\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-10-12\",\"symbol\":\"PVRINOX\",\"type\":\"BUY\",\"qty\":1.0,\"price\":1358.5,\"time\":\"2026-10-12T11:31:07\",\"tradeId\":\"404551863\",\"orderId\":\"1200000045059929\",\"isin\":\"INE191H01014\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-10-19\",\"symbol\":\"HBLENGINE\",\"type\":\"BUY\",\"qty\":2.0,\"price\":827.400024,\"time\":\"2026-10-19T09:00:04\",\"tradeId\":\"200021173\",\"orderId\":\"1100000000055117\",\"isin\":\"INE292B01021\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-10-22\",\"symbol\":\"WIPRO\",\"type\":\"BUY\",\"qty\":4.0,\"price\":191.179993,\"time\":\"2026-10-22T10:46:46\",\"tradeId\":\"604016938\",\"orderId\":\"1300000042326716\",\"isin\":\"INE075A01022\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-10-26\",\"symbol\":\"IGIL\",\"type\":\"BUY\",\"qty\":5.0,\"price\":382.799988,\"time\":\"2026-10-26T13:16:22\",\"tradeId\":\"208802786\",\"orderId\":\"1100000080110364\",\"isin\":\"INE0Q9301021\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-10-26\",\"symbol\":\"IGIL\",\"type\":\"SELL\",\"qty\":5.0,\"price\":387.149994,\"time\":\"2026-10-26T13:33:24\",\"tradeId\":\"209220012\",\"orderId\":\"1100000084149113\",\"isin\":\"INE0Q9301021\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-10-26\",\"symbol\":\"CYIENT\",\"type\":\"BUY\",\"qty\":2.0,\"price\":1243.699951,\"time\":\"2026-10-26T13:34:16\",\"tradeId\":\"6452691\",\"orderId\":\"1000000074701986\",\"isin\":\"INE136B01020\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-11-04\",\"symbol\":\"DELTACORP\",\"type\":\"SELL\",\"qty\":10.0,\"price\":72.550003,\"time\":\"2026-11-04T09:00:06\",\"tradeId\":\"200022982\",\"orderId\":\"1100000000066874\",\"isin\":\"INE124G01033\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-11-04\",\"symbol\":\"CYIENT\",\"type\":\"SELL\",\"qty\":2.0,\"price\":1120.400024,\"time\":\"2026-11-04T12:17:48\",\"tradeId\":\"4870007\",\"orderId\":\"1000000052666364\",\"isin\":\"INE136B01020\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-11-05\",\"symbol\":\"PVRINOX\",\"type\":\"SELL\",\"qty\":1.0,\"price\":1602.400024,\"time\":\"2026-11-05T09:15:22\",\"tradeId\":\"400143466\",\"orderId\":\"1200000000720275\",\"isin\":\"INE191H01014\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-11-05\",\"symbol\":\"PVRINOX\",\"type\":\"BUY\",\"qty\":3.0,\"price\":1605.0,\"time\":\"2026-11-05T10:17:22\",\"tradeId\":\"403780637\",\"orderId\":\"1200000033636695\",\"isin\":\"INE191H01014\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"},{\"date\":\"2026-11-08\",\"symbol\":\"MOTILALOFS\",\"type\":\"BUY\",\"qty\":2.0,\"price\":1131.550049,\"time\":\"2026-11-08T14:20:27\",\"tradeId\":\"400077082\",\"orderId\":\"1200000000438922\",\"isin\":\"INE338I01027\",\"classification\":\"Unclassified\",\"note\":\"Imported from historical Zerodha Tradebook; excluded from new portfolio and P&L until MIS/CNC is verified.\"}]";
+let db=loadDB(), pendingCSV=[];
+let migrationSeq=Math.max(0,...db.tx.map(t=>Number(t.seq)||0));
+db.tx.forEach(t=>{if(!Number.isFinite(Number(t.seq)))t.seq=++migrationSeq;});
+db.market=db.market||{nifty:'Not updated',pe:'',view:'Not updated'};
+
+function loadDB(){try{const x=JSON.parse(localStorage.getItem(KEY))||{tx:[],setups:[],prices:{}};x.tx=x.tx||[];x.tx.forEach(t=>{t.portfolioType=t.portfolioType==='INVESTMENT'?'INVESTMENT':'TRADING';t.productType='CNC';});x.setups=x.setups||[];x.prices=x.prices||{};x.legacyTrades=x.legacyTrades||JSON.parse(INITIAL_LEGACY_TRADES);return x}catch(e){return{tx:[],setups:[],prices:{},legacyTrades:JSON.parse(INITIAL_LEGACY_TRADES)}}}
+function save(){db.market={nifty:dashNifty?.value||'Not updated',pe:dashPE?.value||'',view:dashMarket?.value||'Not updated'};localStorage.setItem(KEY,JSON.stringify(db));render()}
+function money(n){return '₹'+(Number(n)||0).toLocaleString('en-IN',{maximumFractionDigits:2,minimumFractionDigits:2})}
+function num(id){return Number(document.getElementById(id).value)||0}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function showTab(id){document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));render()}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+document.getElementById('accountingMethod').addEventListener('change',render);
+
+const dashNifty=document.getElementById('dashNifty'),dashPE=document.getElementById('dashPE'),dashPEBand=document.getElementById('dashPEBand'),dashMarket=document.getElementById('dashMarket');
+function peBand(v){if(!Number.isFinite(v)||v<=0)return 'Not updated';if(v>=10&&v<15)return 'Cheap';if(v>=15&&v<20)return 'Moderate';if(v>=20&&v<=25)return 'High / Expensive';return 'Outside bands'}
+function updateMarketCards(){
+ const band=peBand(Number(dashPE.value));
+ dashPEBand.textContent=band;
+ dashPEBand.className='status-pill '+(band==='Cheap'?'positive':band==='Moderate'?'neutral':band==='High / Expensive'?'negative':'neutral');
+ if(dashNifty.value)jNifty.value=dashNifty.value;
+ if(dashPE.value)jPE.value=band==='Cheap'?'Cheap (10–15)':band==='Moderate'?'Moderate (15–20)':band==='High / Expensive'?'Expensive (20–25)':'Outside defined bands';
+}
+dashNifty.addEventListener('change',updateMarketCards);dashPE.addEventListener('input',updateMarketCards);dashMarket.addEventListener('change',updateMarketCards);
+dashNifty.value=db.market.nifty||'Not updated';dashPE.value=db.market.pe||'';dashMarket.value=db.market.view||'Not updated';updateMarketCards();
+
+document.getElementById('txDate').value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+function sortTransactions(list){
+ return list.map((t,index)=>({t,index})).sort((a,b)=>{
+   const d=String(a.t.date||'').localeCompare(String(b.t.date||''));
+   if(d)return d;
+   const as=Number.isFinite(Number(a.t.seq))?Number(a.t.seq):a.index;
+   const bs=Number.isFinite(Number(b.t.seq))?Number(b.t.seq):b.index;
+   return as-bs||a.index-b.index;
+ }).map(x=>x.t);
+}
+function bookOf(t){return t.portfolioType==='INVESTMENT'?'INVESTMENT':'TRADING'}
+function validateTransactionHistory(list){
+ const balances={};
+ for(const t of sortTransactions(list)){
+   const sym=String(t.symbol||'').trim().toUpperCase();
+   const qty=Number(t.qty),book=bookOf(t),key=book+'::'+sym;
+   if(!sym||!['BUY','SELL'].includes(t.type)||!Number.isInteger(qty)||qty<=0)throw Error('Invalid transaction: check symbol, BUY/SELL type and whole-number quantity.');
+   if(t.productType && t.productType!=='CNC')throw Error('Only CNC Delivery transactions are supported.');
+   balances[key]=balances[key]||0;
+   if(t.type==='BUY')balances[key]+=qty;
+   else{
+     if(qty>balances[key])throw Error(`${sym} (${book==='INVESTMENT'?'Long-Term Investment':'Delivery Trading'}): SELL of ${qty} shares on ${t.date} exceeds available quantity ${balances[key]}.`);
+     balances[key]-=qty;
+   }
+ }
+ return balances;
+}
+function addTransaction(t,quiet=false){
+ t.symbol=String(t.symbol||'').trim().toUpperCase();
+ t.type=String(t.type||'').toUpperCase();
+ t.qty=Number(t.qty);t.price=Number(t.price);t.charges=Number(t.charges)||0;
+ t.productType='CNC';t.portfolioType=t.portfolioType==='INVESTMENT'?'INVESTMENT':'TRADING';
+ if(!t.symbol||!/^\d{4}-\d{2}-\d{2}$/.test(t.date||'')||!['BUY','SELL'].includes(t.type)||!Number.isInteger(t.qty)||t.qty<=0||!Number.isFinite(t.price)||t.price<=0||!Number.isFinite(t.charges)||t.charges<0)throw Error('Enter a valid date, symbol, BUY/SELL type, whole-number quantity, positive price and non-negative charges.');
+ if(t.type==='SELL'&&t.charges>t.qty*t.price)throw Error('Sell charges cannot exceed the gross sale value.');
+ const nextSeq=Math.max(0,...db.tx.map(x=>Number(x.seq)||0))+1;
+ const candidate={...t,seq:nextSeq,id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random())};
+ validateTransactionHistory([...db.tx,candidate]);
+ db.tx.push(candidate);if(!quiet)save()
+}
+document.getElementById('addTx').onclick=()=>{try{addTransaction({date:txDate.value,symbol:txSymbol.value,type:txType.value,category:txCategory.value,portfolioType:txBook.value,productType:'CNC',qty:txQty.value,price:txPrice.value,charges:txCharges.value,notes:txNotes.value});['txSymbol','txQty','txPrice','txNotes'].forEach(id=>document.getElementById(id).value='');alert('Transaction saved.')}catch(e){alert(e.message)}};
+document.getElementById('clearTx').onclick=()=>['txSymbol','txQty','txPrice','txNotes'].forEach(id=>document.getElementById(id).value='');
+function ledger(){
+ const method=document.getElementById('accountingMethod')?.value||'FIFO';
+ const groups=[...new Set(db.tx.map(t=>bookOf(t)+'::'+String(t.symbol||'').trim().toUpperCase()))],out={};
+ let realized=0,totalBuy=0,totalSold=0,validationErrors=[];
+ const ordered=sortTransactions(db.tx);
+ try{validateTransactionHistory(ordered)}catch(e){validationErrors.push(e.message)}
+ groups.forEach(key=>{
+   const [book,sym]=key.split('::');
+   const tx=ordered.filter(t=>bookOf(t)===book&&String(t.symbol||'').trim().toUpperCase()===sym);
+   let lots=[],qty=0,totalCost=0;
+   tx.forEach(t=>{
+     const q=Number(t.qty)||0,price=Number(t.price)||0,charges=Number(t.charges)||0;
+     if(t.type==='BUY'){
+       const buyCost=q*price+charges;totalBuy+=buyCost;
+       if(method==='FIFO')lots.push({qty:q,unit:buyCost/q,category:t.category||'Short Term',date:t.date,seq:t.seq});
+       else{totalCost+=buyCost;qty+=q;}
+     }else if(t.type==='SELL'){
+       totalSold+=q;const netProceeds=q*price-charges;
+       if(method==='FIFO'){
+         let remain=q,consumedCost=0;
+         while(remain>0&&lots.length){const lot=lots[0],take=Math.min(remain,lot.qty);consumedCost+=take*lot.unit;lot.qty-=take;remain-=take;if(lot.qty<=1e-10)lots.shift();}
+         if(remain>1e-10)validationErrors.push(`${sym}: unmatched SELL quantity ${remain} on ${t.date}.`);
+         realized+=netProceeds-consumedCost;
+       }else{
+         const avgUnit=qty>0?totalCost/qty:0,consumedCost=Math.min(q,qty)*avgUnit;
+         realized+=netProceeds-consumedCost;qty-=q;totalCost-=consumedCost;
+         if(Math.abs(qty)<1e-10){qty=0;totalCost=0;}
+       }
+     }
+   });
+   const heldQty=method==='FIFO'?lots.reduce((a,l)=>a+l.qty,0):qty;
+   const cost=method==='FIFO'?lots.reduce((a,l)=>a+l.qty*l.unit,0):totalCost;
+   const avg=heldQty>0?cost/heldQty:0;
+   const categories=[...new Set((method==='FIFO'?lots.map(l=>l.category):tx.filter(t=>t.type==='BUY').map(t=>t.category||'Short Term')))];
+   out[key]={symbol:sym,portfolioType:book,qty:heldQty,cost,avg,category:categories.length===1?categories[0]:(categories.length?'Mixed':'Short Term'),categories,last:Number(db.prices[sym]??0),lots,method};
+ });
+ return{out,realized,totalBuy,totalSold,method,validationErrors};
+}
+function holdings(){return ledger().out}
+function pnlClass(n){return n>0?'green':n<0?'red':'muted'}
+function pnlBoxClass(n){return n>0?'pnl-positive':n<0?'pnl-negative':'pnl-neutral'}
+function setPnlCard(el,n){el.classList.remove('pnl-positive','pnl-negative','pnl-neutral');el.classList.add(pnlBoxClass(n));}
+function render(){
+ const L=ledger(),arr=Object.entries(L.out),open=arr.filter(([s,h])=>h.qty>0),market=open.reduce((s,[k,h])=>s+h.qty*h.last,0),cost=open.reduce((s,[k,h])=>s+h.cost,0),unreal= open.reduce((s,[k,h])=>s+h.qty*h.last-h.cost,0);
+ mBuy.textContent=money(L.totalBuy);mValue.textContent=money(market);mReal.textContent=money(L.realized);mUnreal.textContent=money(unreal);setPnlCard(mReal.closest('.metric'),L.realized);setPnlCard(mUnreal.closest('.metric'),unreal);
+ const integrity=document.getElementById('ledgerIntegrity');
+ if(integrity){
+   integrity.className='ledger-integrity '+(L.validationErrors.length?'has-errors':'is-valid');
+   integrity.textContent=L.validationErrors.length?'Accounting check: '+L.validationErrors.join(' | '):'Accounting check: transaction quantities are balanced; no oversold positions detected.';
+ }
+ dashRows.innerHTML=open.map(([s,h])=>`<tr><td><b>${esc(h.symbol)}</b></td><td>${h.portfolioType==='INVESTMENT'?'Long-Term Investment':'Delivery Trading'}</td><td>${esc(h.category)}</td><td>${h.qty}</td><td>${money(h.avg)}</td><td>${h.last?money(h.last):'—'}</td><td>${money(h.qty*h.last)}</td><td class="${pnlClass(h.qty*h.last-h.cost)}">${h.last?`<span class="pnl-box ${pnlBoxClass(h.qty*h.last-h.cost)}">${money(h.qty*h.last-h.cost)}</span>`:'—'}</td></tr>`).join('')||'<tr><td colspan="9" class="muted">No holdings yet. Add a transaction to begin.</td></tr>';
+ recentRows.innerHTML=[...db.tx].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8).map(t=>`<tr><td>${esc(t.date)}</td><td>${esc(t.symbol)}</td><td><span class="pill">${t.type}</span></td><td>${t.qty}</td><td>${money(t.price)}</td><td>${money(t.qty*t.price)}</td></tr>`).join('')||'<tr><td colspan="6" class="muted">No transactions yet.</td></tr>';
+ txRows.innerHTML=[...db.tx].map((t,i)=>({...t,_i:i})).sort((a,b)=>b.date.localeCompare(a.date)||(Number(b.seq)||b._i)-(Number(a.seq)||a._i)).map(t=>`<tr><td>${esc(t.date)}</td><td>${esc(t.symbol)}</td><td>${t.type}</td><td>${bookOf(t)==='INVESTMENT'?'Long-Term Investment':'Delivery Trading'}</td><td>${esc(t.category||'Short Term')}</td><td>CNC</td><td>${t.qty}</td><td>${money(t.price)}</td><td>${money(t.charges)}</td><td>${money(t.qty*t.price)}</td><td>${esc(t.notes)}</td><td><button class="danger" onclick="deleteTx('${t.id}')">Delete</button></td></tr>`).join('')||'<tr><td colspan="12" class="muted">No transactions.</td></tr>';
+ portfolioRows.innerHTML=open.map(([s,h])=>`<tr><td><b>${esc(h.symbol)}</b></td><td>${h.portfolioType==='INVESTMENT'?'Long-Term Investment':'Delivery Trading'}</td><td>${esc(h.category)}</td><td>${h.qty}</td><td>${money(h.avg)}</td><td>${h.last?money(h.last):'—'}</td><td>${money(h.cost)}</td><td>${money(h.qty*h.last)}</td><td class="${pnlClass(h.qty*h.last-h.cost)}">${h.last?`<span class="pnl-box ${pnlBoxClass(h.qty*h.last-h.cost)}">${money(h.qty*h.last-h.cost)}</span>`:'—'}</td><td><button onclick="updatePrice('${h.symbol}')">Update</button></td></tr>`).join('')||'<tr><td colspan="10" class="muted">No open holdings.</td></tr>';
+ journalRows.innerHTML=db.setups.map((j,i)=>`<tr><td>${esc(j.symbol)}</td><td>${money(j.res)}</td><td>${money(j.sup)}</td><td>${money(j.gadda)}</td><td>${money(j.close)}</td><td>${money(j.strategyEntry)}</td><td>${money(j.entry)}</td><td>${money(j.sl)}</td><td>${money(j.target)}</td><td>${j.rr.toFixed(2)} : 1</td><td><button class="danger" onclick="deleteSetup(${i})">Delete</button></td></tr>`).join('')||'<tr><td colspan="11" class="muted">No saved setups.</td></tr>';
+ aSold.textContent=L.totalSold;aOpen.textContent=open.reduce((s,[k,h])=>s+h.qty,0);aSells.textContent=db.tx.filter(t=>t.type==='SELL').length;aSetups.textContent=db.setups.length;const aRealized=document.getElementById('aRealized');if(aRealized){aRealized.textContent=money(L.realized);setPnlCard(aRealized.closest('.metric'),L.realized);document.getElementById('aRealizedMethod').textContent=L.method==='WAC'?'Weighted Average':'FIFO';}
+ const bookRows=document.getElementById('bookRows');if(bookRows){const books=['TRADING','INVESTMENT'];bookRows.innerHTML=books.map(b=>{const hs=open.filter(([k,h])=>h.portfolioType===b),q=hs.reduce((n,[k,h])=>n+h.qty,0),v=hs.reduce((n,[k,h])=>n+h.qty*h.last,0),c=hs.reduce((n,[k,h])=>n+h.cost,0);return `<div class="kpi"><span>${b==='TRADING'?'Delivery Trading':'Long-Term Investment'}</span><b>${q} shares · ${money(v)} · Cost ${money(c)}</b></div>`}).join('');}
+ const cats=['Short Term','Medium Term','Long Term'];catRows.innerHTML=cats.map(c=>{let syms=arr.filter(([s,h])=>h.category===c),q=syms.reduce((s,[k,h])=>s+h.qty,0),v=syms.reduce((s,[k,h])=>s+h.qty*h.last,0);return `<div class="kpi"><span>${c}</span><b>${q} shares · ${money(v)}</b></div>`}).join('');
+  renderLegacyArchive();
+}
+function renderLegacyArchive(){const old=db.legacyTrades||[];const lc=document.getElementById('legacyCount');if(lc)lc.textContent=old.length;const lr=document.getElementById('legacyRows');if(lr)lr.innerHTML=old.map(t=>`<tr><td>${esc(t.date)}</td><td>${esc((t.time||'').slice(11,19))}</td><td><b>${esc(t.symbol)}</b></td><td><span class="pill">${esc(t.type)}</span></td><td>${Number(t.qty)||0}</td><td>${money(t.price)}</td><td>${esc(t.tradeId)}</td><td><span class="pill">${esc(t.classification||'Unclassified')}</span></td></tr>`).join('')||'<tr><td colspan="8">No archived executions.</td></tr>';}
+
+function deleteTx(id){if(!confirm('Delete this transaction? This changes portfolio calculations.'))return;db.tx=db.tx.filter(t=>t.id!==id);save()}
+function deleteSetup(index){if(!Number.isInteger(index)||index<0||index>=db.setups.length)return;if(!confirm('Delete this saved Trading Journal setup?'))return;db.setups.splice(index,1);save()}
+function updatePrice(sym){let v=prompt('Enter latest price for '+sym+' (₹):',db.prices[sym]||'');if(v===null)return;if(!Number.isFinite(Number(v))||Number(v)<=0){alert('Enter a valid positive price');return}db.prices[sym]=Number(v);save()}
+document.getElementById('calcJournal').onclick=()=>{
+ let symbol=jSymbol.value.trim().toUpperCase(),res=num('jResistance'),sup=num('jSupport'),close=num('jClose'),entry=num('jEntry'),low=num('jLow'),qty=num('jQty'),current=num('jCurrent');
+ if(!symbol||res<=sup||!close||!entry||!low||!Number.isInteger(qty)||qty<1){alert('Enter symbol, Resistance > Support, breakout close, actual entry, previous candle low and quantity.');return}
+ let g=res-sup,sl=low-1,target=res+g,risk=entry-sl,reward=target-entry,rr=(risk>0&&reward>0)?reward/risk:0;
+ let j={symbol,res,sup,gadda:g,close,strategyEntry:close+1,entry,low,sl,qty,target,risk,reward,rr,current,category:jCategory.value,ema:jEma.value,volume:jVolume.value,nifty:jNifty.value,pe:jPE.value,date:new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10)};
+ const duplicateSetup=db.setups.some(x=>String(x.symbol).toUpperCase()===symbol&&Number(x.res)===res&&Number(x.sup)===sup&&Number(x.close)===close&&Number(x.entry)===entry&&Number(x.sl)===sl&&Number(x.qty)===qty);
+ if(duplicateSetup){alert('This exact setup is already saved. Duplicate was not added.');return}
+ db.setups.unshift(j);jResults.innerHTML=`<div class="kpi"><span>Gadda</span><b class="pnl-box ${pnlBoxClass(g)}">${money(g)}</b></div><div class="kpi"><span>Strategy Entry (Close + ₹1)</span><b>${money(close+1)}</b></div><div class="kpi"><span>Actual Entry</span><b>${money(entry)}</b></div><div class="kpi"><span>Stop Loss</span><b>${money(sl)}</b></div><div class="kpi"><span>Target</span><b>${money(target)}</b></div><div class="kpi"><span>Risk / Share</span><b class="pnl-box ${pnlBoxClass(-Math.abs(risk))}">${money(risk)}</b></div><div class="kpi"><span>Potential Reward / Share</span><b class="pnl-box ${pnlBoxClass(reward)}">${money(reward)}</b></div><div class="kpi"><span>Total Risk</span><b class="pnl-box ${pnlBoxClass(-Math.abs(risk*qty))}">${money(risk*qty)}</b></div><div class="kpi"><span>Total Potential Reward</span><b class="pnl-box ${pnlBoxClass(reward*qty)}">${money(reward*qty)}</b></div><div class="kpi"><span>Risk : Reward</span><b class="pnl-box ${rr>0?'pnl-positive':'pnl-negative'}">${rr?('1 : '+rr.toFixed(2)):'Not valid'}</b></div>`;
+ save()
+};
+function csvCell(x){return '"'+String(x??'').replace(/"/g,'""')+'"'}
+document.getElementById('legacyExport').onclick=()=>{const a=db.legacyTrades||[];const rows=[['date','time','symbol','side','quantity','price','trade_id','order_id','isin','classification','note'],...a.map(t=>[t.date,t.time,t.symbol,t.type,t.qty,t.price,t.tradeId,t.orderId,t.isin,t.classification,t.note])];download('mwt_old_tradebook_archive.csv',rows.map(r=>r.map(csvCell).join(',')).join('\n'),'text/csv')};
+document.getElementById('csvExport').onclick=()=>{let rows=[['date','symbol','type','product_type','portfolio','category','qty','price','charges','notes'],...db.tx.map(t=>[t.date,t.symbol,t.type,'CNC',bookOf(t),t.category,t.qty,t.price,t.charges,t.notes])];download('mwt_transactions.csv',rows.map(r=>r.map(csvCell).join(',')).join('\n'),'text/csv')};
+function download(name,data,type){let a=document.createElement('a'),u=URL.createObjectURL(new Blob([data],{type}));a.href=u;a.download=name;a.click();URL.revokeObjectURL(u)}
+exportBtn.onclick=()=>download('my_wealth_tracker_backup.json',JSON.stringify(db,null,2),'application/json');
+let pendingBackupData=null;
+// Explicit DOM lookup: Android content:// pages do not reliably expose element IDs as globals.
+const backupFile=document.getElementById('backupFile');
+const backupPanel=document.getElementById('backupRestorePanel');
+const backupStatus=document.getElementById('backupStatus');
+backupFile.addEventListener('change', e=>{
+  const file=e.target.files&&e.target.files[0];
+  pendingBackupData=null;
+  if(!file){backupPanel.classList.remove('show');return;}
+  // Show the restore controls immediately; do not depend on Android WebView File.text().
+  backupPanel.classList.add('show');
+  backupStatus.textContent='Selected file: reading backup…';
+  document.getElementById('backupSelectedName').textContent=file.name;
+  backupStatus.textContent='Backup file selected. Reading and checking…';
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const parsed=JSON.parse(String(reader.result||''));
+      if(!parsed||!Array.isArray(parsed.tx)||!Array.isArray(parsed.setups))throw Error('यह मान्य MY WEALTH TRACKER Backup JSON नहीं है।');
+      pendingBackupData=parsed;
+      document.getElementById('backupSelectedName').textContent=file.name+' · '+parsed.tx.length+' transactions · '+parsed.setups.length+' journal setups';
+      backupStatus.textContent='फाइल जाँच सफल। अब Restore Backup दबाएँ।';
+    }catch(err){pendingBackupData=null;backupStatus.textContent='Backup पढ़ने में समस्या: '+err.message;}
+  };
+  reader.onerror=()=>{pendingBackupData=null;backupStatus.textContent='Android browser इस फाइल को पढ़ नहीं पाया।';};
+  reader.readAsText(file);
+});
+document.getElementById('restoreBackupNow').onclick=()=>{
+  if(!pendingBackupData){backupStatus.textContent='पहले एक सही Backup JSON फाइल चुनें।';return;}
+  try{
+    const x=JSON.parse(JSON.stringify(pendingBackupData));
+    x.prices=x.prices||{};
+    x.tx=(x.tx||[]).map(t=>({...t,portfolioType:t.portfolioType==='INVESTMENT'?'INVESTMENT':'TRADING',productType:'CNC'}));
+    x.market=x.market||{nifty:'Not updated',pe:'',view:'Not updated'};
+    x.legacyTrades=x.legacyTrades||db.legacyTrades||JSON.parse(INITIAL_LEGACY_TRADES);
+    db=x;
+    save();
+    pendingBackupData=null;
+    backupPanel.classList.remove('show');
+    backupStatus.textContent='Restore successful.';
+    backupFile.value='';
+    alert('Backup restored successfully.');
+  }catch(err){backupStatus.textContent='Restore failed: '+err.message;}
+};
+document.getElementById('cancelBackupRestore').onclick=()=>{pendingBackupData=null;backupFile.value='';backupPanel.classList.remove('show');backupStatus.textContent='Restore cancelled. Existing data was not changed.';};
+function parseCSV(text){let lines=text.replace(/^\uFEFF/,'').split(/\r?\n/).filter(x=>x.trim());function parseLine(line){let a=[],v='',q=false;for(let i=0;i<line.length;i++){let c=line[i];if(c==='"'&&line[i+1]==='"'&&q){v+='"';i++}else if(c==='"')q=!q;else if(c===','&&!q){a.push(v);v=''}else v+=c}a.push(v);return a}let head=parseLine(lines[0]).map(x=>x.trim().toLowerCase());return lines.slice(1).map(line=>{let a=parseLine(line),o={};head.forEach((h,i)=>o[h]=a[i]);return o})}
+csvFile.onchange=async e=>{try{let rows=parseCSV(await e.target.files[0].text());if(!rows.length)throw Error('CSV has no rows');let keys=Object.keys(rows[0]);let pick=(r,arr)=>{let k=keys.find(x=>arr.includes(x));return k?r[k]:''};pendingCSV=rows.map(r=>({date:pick(r,['trade_date','trade date','date']),symbol:pick(r,['symbol','tradingsymbol','trading symbol']),type:String(pick(r,['trade_type','trade type','transaction type','type','buy/sell'])).trim().toUpperCase(),qty:pick(r,['quantity','qty']),price:pick(r,['price','average price','trade price']),charges:0,category:'Short Term',portfolioType:'TRADING',productType:'CNC',notes:'Imported as confirmed CNC/Delivery from Zerodha Tradebook CSV'})).filter(t=>t.date&&t.symbol&&['BUY','SELL'].includes(t.type)&&Number(t.qty)>0&&Number(t.price)>0);
+csvPreview.innerHTML=`<b>${pendingCSV.length}</b> valid rows detected. Sample:<pre style="white-space:pre-wrap;color:#b8c8dd">${esc(JSON.stringify(pendingCSV.slice(0,5),null,2))}</pre><span class="muted">Detected columns: ${esc(keys.join(', '))}</span><p class="muted">Date, BUY/SELL, quantity and price are checked before import. Zerodha Tradebook CSV does not include brokerage/charges in this export; charges remain ₹0 until reconciled from contract notes or broker reports.</p>`;importCsv.disabled=!pendingCSV.length}catch(err){csvPreview.textContent='Could not parse CSV: '+err.message;importCsv.disabled=true}};
+importCsv.onclick=()=>{let count=0,skipped=0;try{
+ const accepted=[];
+ pendingCSV.forEach((t,index)=>{
+   const type=t.type.includes('SELL')?'SELL':t.type.includes('BUY')?'BUY':'';
+   if(!type){skipped++;return}
+   const duplicate=db.tx.some(x=>x.date===t.date&&String(x.symbol).toUpperCase()===String(t.symbol).toUpperCase()&&x.type===type&&Number(x.qty)===Number(t.qty)&&Number(x.price)===Number(t.price));
+   if(duplicate){skipped++;return}
+   accepted.push({...t,type,seq:Math.max(0,...db.tx.map(x=>Number(x.seq)||0))+index+1});
+ });
+ const candidate=[...db.tx,...accepted];
+ validateTransactionHistory(candidate);
+ db.tx=candidate;count=accepted.length;save();
+ alert(`Imported ${count} rows. Skipped ${skipped} duplicates or unrecognized rows. Please reconcile totals and charges with Zerodha Console.`);
+ pendingCSV=[];csvPreview.textContent='';
+ }catch(err){alert('Import was not committed. '+err.message+' Check the CSV date/order, quantities and missing BUY records.')}};
+render();
+</script>
+<script>
+// PWA offline shell registration. App records remain in this browser's localStorage.
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(err => console.warn('PWA service worker registration failed:', err)));
+}
+</script>
+</body></html>
